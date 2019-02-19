@@ -1,16 +1,68 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+    {#<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">#}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">WebSiteName</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="{{ path('home') }}">Home</a></li>
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span
+                            class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Page 1-1</a></li>
+                    <li><a href="#">Page 1-2</a></li>
+                    <li><a href="#">Page 1-3</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Page 2</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right" >
+            <form class="navbar-form navbar-left" action="">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="search">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            {% if app.user %}
+
+                <li class="dropdown"><a style="color: powderblue"   class="dropdown-toggle" data-toggle="dropdown" href="#">{{ app.user.username }}<span
+                                class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">thing</a></li>
+                        <li><a href="#">Page 1-3</a></li>
+                    </ul>
+                </li>
+
+                <li ><a style="color: red" href="{{ path("logout") }}">Log out</a></li>
+            {% else %}
+                <li><a href="{{ path('register') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="{{ path('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+{% block body %}{% endblock %}
+{% block javascripts %}{% endblock %}
+</body>
 </html>

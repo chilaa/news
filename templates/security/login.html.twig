@@ -5,6 +5,7 @@
 {% block body %}
 <form method="post">
     {% if error %}
+
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
@@ -18,8 +19,7 @@
     <br>
 
     <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
+           value="{{ csrf_token('authenticate') }}" >
 
     {#
         Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.

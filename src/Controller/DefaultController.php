@@ -14,8 +14,19 @@ class DefaultController extends AbstractController
     {
         return $this->render('article/home.html.twig', [
             'controller_name' => 'DefaultController',
+            'session' => $_SESSION
         ]);
     }
 
+    /**
+     * @Route("/logout", name="logout")
+     */
+    public function logOut()
+    {
+        return $this->render("article/home.html.twig", [
+            'controller_name' => "DefaultController",
+            "session" => $_SESSION
+        ]);
+    }
 
 }
