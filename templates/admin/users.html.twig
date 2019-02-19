@@ -1,0 +1,66 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Users{% endblock %}
+
+{% block body %}
+    {#{{ dump(users) }}#}
+
+
+
+
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+
+                    <td class="dropdown">
+                        <form action="{{ path('changeRole', {id: user.id}) }}" method="post" class="form-group">
+                            <label for="input"></label>
+                            <select style="display: inline" class="form-control" name="role" id="input">
+                                <option selected value="{{ user.roles[0] }}">
+                                    {% if user.roles[0] == 'ROLE_ADMIN' %}
+                                        Admin
+                                    {% elseif user.roles[0] == 'ROLE_EDITOR' %}
+                                        Editor
+                                    {% endif %}
+                                </option>
+                                <option value="{% if user.roles[0] == 'ROLE_ADMIN' %}ROLE_EDITOR{% elseif user.roles[0] == 'ROLE_EDITOR' %}ROLE_ADMIN{% endif %}">
+                                    {% if user.roles[0] == 'ROLE_ADMIN' %}
+                                        Editor
+                                    {% elseif user.roles[0] == 'ROLE_EDITOR' %}
+                                        Admin
+                                    {% endif %}
+                                </option>
+
+                            </select>
+                            <input style="display: inline" type="submit" value="Save" class="btn btn-success">
+                        </form>
+                    </td>
+                    <td>
+                        <a {% if user.username == app.user.username %} disabled
+                        {% else %}
+                            href="{{ path("delete_user", {id : user.id}) }}"
+                        {% endif %}
+                                class="btn btn-danger">Delete
+                        </a>
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}

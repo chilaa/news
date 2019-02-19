@@ -18,22 +18,12 @@
     </style>
 
     <div class="example-wrapper">
-        {#<h1>Hello {{ controller_name }}! ✅</h1>#}
 
+        {#{{ if isgranted }}#}
+        {{ dump(session) }}
+        {#{{ dump(id) }}#}
+        {{ dump(app.user) }}
+        {{ dump(app.request) }}
 
-        {#{{ dump(session) }}#}
-
-        {#{{ dump(app.user.username) }}#}
-        {#{{ dump(app.request) }}#}
-        {#<h3>{% app.session.get() %}</h3>#}
-        {#This friendly message is coming from:#}
-        {#<ul>#}
-            {#<li>Your controller at <code><a#}
-                            {#href="{{ '/home/chila/PhpstormProjects/symfony/news/src/Controller/DefaultController.php'|file_link(0) }}">src/Controller/DefaultController.php</a></code>#}
-            {#</li>#}
-            {#<li>Your template at <code><a#}
-                            {#href="{{ '/home/chila/PhpstormProjects/symfony/news/templates/article/home.html.twig'|file_link(0) }}">templates/default/index.html.twig</a></code>#}
-            {#</li>#}
-        {#</ul>#}
     </div>
 {% endblock %}

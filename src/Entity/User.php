@@ -38,7 +38,7 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->roles[] = 'ROLE_USER';
+        $this->roles[] = 'ROLE_EDITOR';
     }
 
     public function getId(): ?int
@@ -70,7 +70,7 @@ class User implements UserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_EDITOR';
 
         return array_unique($roles);
     }
