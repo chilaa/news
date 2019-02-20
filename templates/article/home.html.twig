@@ -18,12 +18,20 @@
     </style>
 
     <div class="example-wrapper">
+        {#{{ dump(posts) }}#}
+        {% for post in posts %}
+            <div class="well">
+                <h2 class="well">{{ post.title }}</h2>
+                <h4 class="well well-sm">{{ post.subtitle }}</h4>
+                <p>{{ post.body }}</p>
+                <h5>Posted by <strong>{{ post.owner }}</strong></h5>
+                {% if app.user %}
+                    <a class="btn btn-default">Edit</a>
+                    <a class="btn btn-danger">Delete</a>
+                {% endif %}
+                {{ dump(post) }}
 
-        {#{{ if isgranted }}#}
-        {{ dump(session) }}
-        {#{{ dump(id) }}#}
-        {{ dump(app.user) }}
-        {{ dump(app.request) }}
-
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}

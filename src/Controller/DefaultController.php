@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Post;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use http\Env\Request;
@@ -15,9 +16,10 @@ class DefaultController extends AbstractController
      */
     public function index()
     {
-        return $this->render('article/home.html.twig', [
-            'controller_name' => 'DefaultController',
-            'session' => $_SESSION
+        $entityManager = $this->getDoctrine()->getManager();
+        $posts = $entityManager->getRepository(Post::class)->findAll();
+        return $this->render("article/home.html.twig", [
+            "posts" => $posts
         ]);
     }
 
@@ -63,6 +65,7 @@ class DefaultController extends AbstractController
         return $this->render("article/home.html.twig", [
             'controller_name' => "DefaultController",
             "session" => $_SESSION
+
         ]);
     }
 
@@ -79,5 +82,29 @@ class DefaultController extends AbstractController
         return $this->redirectToRoute("show_users");
     }
 
+    /**
+     * @Route("/add/post", name="add_post")
+     */
+    public function addPost()
+    {
+        return $this->render("editor/new-post.html.twig");
+    }
 
+    /**
+     * @Route("/submit/post", name="submit")
+     */
+    public function submitPost()
+    {
+        $data = $_POST;
+        $username = $this->getUser()->getUsername();
+        $post = new Post($data, $username);
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $entityManager->persist($post);
+        $entityManager->flush();
+
+        $posts = $entityManager->getRepository(Post::class)->findAll();
+        return $this->redirectToRoute("home");
+    }
 }

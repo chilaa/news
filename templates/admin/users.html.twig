@@ -24,7 +24,7 @@
                     <td>{{ user.username }}</td>
 
                     <td class="dropdown">
-                        <form action="{{ path('changeRole', {id: user.id}) }}" method="post" class="form-group">
+                        <form action="{{ path('changeRole', {id: user.id}) }}" method="post" class="form-group form-inline">
                             <label for="input"></label>
                             <select style="display: inline" class="form-control" name="role" id="input">
                                 <option selected value="{{ user.roles[0] }}">

@@ -37,3 +37,5 @@ security:
          - { path: ^/show/users, roles: ROLE_ADMIN }
          - { path: ^/change-role/*, roles: ROLE_ADMIN}
          - { path: ^/delete/user/*, roles: ROLE_ADMIN }
+         - { path: ^/add/post, roles: ROLE_ADMIN}
+         - { path: ^/add/post, roles: ROLE_EDITOR}
