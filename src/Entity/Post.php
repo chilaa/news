@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use PhpParser\Node\Scalar\MagicConst\File;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PostRepository")
@@ -34,8 +37,12 @@ class Post
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @var FileType
+     * @Assert\File(mimeTypes={*})
      */
     private $image;
+
+
 
     /**
      * @ORM\Column(type="json_array", nullable=true)
@@ -101,12 +108,12 @@ class Post
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getImage()
     {
         return $this->image;
     }
 
-    public function setImage( $image): self
+    public function setImage( $image)
     {
         $this->image = $image;
 

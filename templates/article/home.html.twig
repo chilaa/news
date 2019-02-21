@@ -26,10 +26,10 @@
                 <p>{{ post.body }}</p>
                 <h5>Posted by <strong>{{ post.owner }}</strong></h5>
                 {% if app.user %}
-                    <a class="btn btn-default">Edit</a>
-                    <a class="btn btn-danger">Delete</a>
+                    <a class="btn btn-default" href="{{ path("edit_post", {id: post.id }) }}">Edit</a>
+                    <a class="btn btn-danger" href="{{ path("delete-post", {id: post.id     }) }}" >Delete</a>
                 {% endif %}
-                {{ dump(post) }}
+                {#{{ dump(post) }}#}
 
             </div>
         {% endfor %}

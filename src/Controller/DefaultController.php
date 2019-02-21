@@ -7,7 +7,10 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use http\Env\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class DefaultController extends AbstractController
 {
@@ -99,12 +102,62 @@ class DefaultController extends AbstractController
         $username = $this->getUser()->getUsername();
         $post = new Post($data, $username);
 
+
         $entityManager = $this->getDoctrine()->getManager();
 
         $entityManager->persist($post);
         $entityManager->flush();
 
-        $posts = $entityManager->getRepository(Post::class)->findAll();
+        return $this->redirectToRoute("home");
+    }
+
+    public function generateUniqueFileName()
+    {
+        return md5(uniqid());
+    }
+
+    /**
+     * @Route("/edit/post/{id}", name = "edit_post")
+     */
+    public function editPost($id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $post = $entityManager->getRepository(Post::class)->find($id);
+        return $this->render("editor/edit-post.html.twig", [
+            "data" => $post
+        ]);
+    }
+
+    /**
+     *
+     * @Route("/submit/edited-post/{id}", name="submit-edited-post")
+     */
+
+    public function submitEditedPost($id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $data = $entityManager->getRepository(Post::class)->find($id);
+        $submition = $_POST;
+        $data->setTitle($submition["title"]);
+        $data->setSubtitle($submition['subtitle']);
+        $data->setBody($submition['body']);
+        if ($submition['image']){
+            $data->setImage($submition['image']);
+        }
+        $entityManager->persist($data);
+        $entityManager->flush();
+        return $this->redirectToRoute("home");
+    }
+
+    /**
+     * @Route("/delete/post/{id}", name="delete-post")
+     */
+    public function deletePost($id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $post = $entityManager->getRepository(Post::class)->find($id);
+        $entityManager->remove($post);
+        $entityManager->flush();
         return $this->redirectToRoute("home");
     }
 }
