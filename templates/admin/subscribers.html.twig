@@ -1,0 +1,27 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Subscribers{% endblock %}
+{% block body %}
+    {{ dump(subscribers) }}
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for subscriber in subscribers %}
+            <tr>
+                <td>
+                    {{ subscriber.email }}
+                </td>
+                <td><a class="btn btn-danger" href="{{ path("remove-subscriber", {id: subscriber.id}) }}">Remove</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

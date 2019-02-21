@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\Subscriber;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use http\Env\Request;
@@ -65,11 +66,7 @@ class DefaultController extends AbstractController
         $user->setRoles($role);
         $entityManager->flush();
 
-        return $this->render("article/home.html.twig", [
-            'controller_name' => "DefaultController",
-            "session" => $_SESSION
-
-        ]);
+        return $this->redirectToRoute("home");
     }
 
     /**
@@ -101,7 +98,6 @@ class DefaultController extends AbstractController
         $data = $_POST;
         $username = $this->getUser()->getUsername();
         $post = new Post($data, $username);
-
 
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -141,7 +137,7 @@ class DefaultController extends AbstractController
         $data->setTitle($submition["title"]);
         $data->setSubtitle($submition['subtitle']);
         $data->setBody($submition['body']);
-        if ($submition['image']){
+        if ($submition['image']) {
             $data->setImage($submition['image']);
         }
         $entityManager->persist($data);
@@ -159,5 +155,42 @@ class DefaultController extends AbstractController
         $entityManager->remove($post);
         $entityManager->flush();
         return $this->redirectToRoute("home");
+    }
+
+    /**
+     * @Route("/add/subscriber" , name="add-subscriber")
+     */
+    public function addSubscriber()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $subscriber = new Subscriber($_POST);
+        $entityManager->persist($subscriber);
+        $entityManager->flush();
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/show/subscribers", name="show-subscribers")
+     */
+    public function showSubscribers()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $subscribers = $entityManager->getRepository(Subscriber::class)->findAll();
+        return $this->render("admin/subscribers.html.twig", [
+            "subscribers" =>$subscribers
+        ]);
+    }
+
+    /**
+     * @Route("/delete/subscriber/{id}", name="remove-subscriber")
+     */
+    public function removeSubscriber($id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $subscriber = $entityManager->getRepository(Subscriber::class)->find($id);
+        $entityManager->remove($subscriber);
+        $entityManager->flush();
+
+        return $this->redirectToRoute("show-subscribers");
     }
 }

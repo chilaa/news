@@ -17,6 +17,13 @@
         }
     </style>
 
+    <form action="{{ path("add-subscriber") }}" class=" col-xs-2 " style="position: fixed" method="post" >
+        <div class="input-group">
+
+            <input id="email" type="text" class="form-control" name="email" placeholder="Email">
+            <input class="form-control btn btn-success" value="Subscribe" type="submit">
+        </div>
+    </form>
     <div class="example-wrapper">
         {#{{ dump(posts) }}#}
         {% for post in posts %}
