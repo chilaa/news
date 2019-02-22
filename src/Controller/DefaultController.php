@@ -6,12 +6,9 @@ use App\Entity\Post;
 use App\Entity\Subscriber;
 use App\Entity\User;
 use App\Repository\UserRepository;
-use http\Env\Request;
+use http\Message\Body;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class DefaultController extends AbstractController
 {
@@ -23,7 +20,8 @@ class DefaultController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $posts = $entityManager->getRepository(Post::class)->findAll();
         return $this->render("article/home.html.twig", [
-            "posts" => $posts
+            "posts" => $posts,
+            "this" => $this
         ]);
     }
 
@@ -93,7 +91,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/submit/post", name="submit")
      */
-    public function submitPost()
+    public function submitPost(\Swift_Mailer $mailer)
     {
         $data = $_POST;
         $username = $this->getUser()->getUsername();
@@ -103,6 +101,17 @@ class DefaultController extends AbstractController
 
         $entityManager->persist($post);
         $entityManager->flush();
+
+        $subject = "New Post On News";
+
+        $subscribers = $entityManager->getRepository(Subscriber::class)->findAll();
+
+        foreach ($subscribers as $subscriber ){
+            $body = $this->render("mail/new-post.html.twig",[
+                "subscriber"=>$subscriber
+            ]);
+            $this->sendEmail($subject, $subscriber->getEmail(),$body, $mailer);
+        }
 
         return $this->redirectToRoute("home");
     }
@@ -160,12 +169,26 @@ class DefaultController extends AbstractController
     /**
      * @Route("/add/subscriber" , name="add-subscriber")
      */
-    public function addSubscriber()
+    public function addSubscriber(\Swift_Mailer $mailer)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $subscriber = new Subscriber($_POST);
+        if ($entityManager->getRepository(Subscriber::class)->findOneBy(
+            ["email" => $subscriber->getEmail()]
+        )) {
+            return $this->render("article/error.html.twig",[
+                "error" => "You already are our subscriber :0 thanks a lot"
+            ]);
+        }
+
         $entityManager->persist($subscriber);
         $entityManager->flush();
+        $subject = "Welcome";
+        $body = $this->render("mail/registered.html.twig", [
+            "subscriber" => $subscriber
+        ]);
+        $this->sendEmail($subject, $subscriber->getEmail(),$body, $mailer);
+
         return $this->redirectToRoute('home');
     }
 
@@ -177,7 +200,7 @@ class DefaultController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $subscribers = $entityManager->getRepository(Subscriber::class)->findAll();
         return $this->render("admin/subscribers.html.twig", [
-            "subscribers" =>$subscribers
+            "subscribers" => $subscribers
         ]);
     }
 
@@ -192,5 +215,18 @@ class DefaultController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute("show-subscribers");
+    }
+
+    public function sendEmail($subject,  $address,  $body, \Swift_Mailer $mailer)
+    {
+        $message = (new \Swift_Message($subject))
+            ->setFrom('farnnn.ff@gmail.com')
+            ->setTo($address)
+            ->setBody(
+                $body,
+                "text/html"
+            );
+        $mailer->send($message);
+        return true;
     }
 }

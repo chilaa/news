@@ -1,0 +1,10 @@
+{% extends "base.html.twig" %}
+{% block title %}Errooor{% endblock %}
+
+{% block body %}
+    {% if error is defined %}
+
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    <a class="btn btn-default" href="{{ path("home") }}">Back home</a>
+{% endblock %}
