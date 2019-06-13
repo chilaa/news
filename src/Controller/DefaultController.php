@@ -8,7 +8,9 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use http\Message\Body;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Vich\UploaderBundle\Entity\File;
 
 class DefaultController extends AbstractController
 {
@@ -91,18 +93,24 @@ class DefaultController extends AbstractController
     /**
      * @Route("/submit/post", name="submit")
      */
-    public function submitPost(\Swift_Mailer $mailer)
+    public function submitPost(\Swift_Mailer $mailer, Request $request)
     {
         $data = $_POST;
+
         $username = $this->getUser()->getUsername();
         $post = new Post($data, $username);
 
         $entityManager = $this->getDoctrine()->getManager();
 
+//        /** @var File $file */
+//        $file = $request->files->get()
+
+
         $entityManager->persist($post);
         $entityManager->flush();
 
         $subject = "New Post On News";
+
 
         $subscribers = $entityManager->getRepository(Subscriber::class)->findAll();
 
